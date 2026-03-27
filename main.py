@@ -9,38 +9,48 @@ from src.tg import get_client, get_all_gifts
 
 
 async def start(timeout, every_time):
-    client = get_client()
-    async with client:
+    while True:
         try:
-            while True:
-                unique_gifts = await get_all_gifts(client)
-                gift_now = unique_gifts[randint(0, len(unique_gifts))]
-
+            client = get_client()
+            async with client:
                 while True:
                     try:
-                        await client(UpdateEmojiStatusRequest(
-                            emoji_status=InputEmojiStatusCollectible(
-                                collectible_id=gift_now,
-                            )
-                        ))
-                        print('success change prem status')
-                        break
-                    except:
-                        await asyncio.sleep(15)
-                await asyncio.create_task(change_status(client, timeout, every_time))
-        except:
-            await asyncio.sleep(30)
+                        unique_gifts = await get_all_gifts(client)
+                        gift_now = unique_gifts[randint(0, len(unique_gifts))]
+                        while True:
+                            try:
+                                await client(UpdateEmojiStatusRequest(
+                                    emoji_status=InputEmojiStatusCollectible(
+                                        collectible_id=gift_now,
+                                    )
+                                ))
+                                print('success change prem status')
+                                break
+                            except Exception as e:
+                                print(e)
+                                await asyncio.sleep(15)
+                        await asyncio.create_task(change_status(client, timeout, every_time))
+                    except Exception as e:
+                        print(e)
+                        await asyncio.sleep(30)
+        except Exception as e:
+            print(e)
+            await asyncio.sleep(60)
 
 
 async def change_status(client, timeout, every_time):
     while timeout - every_time >= 0:
-        await client(UpdateProfileRequest(
-            about=f'{timeout:.13f}'
-        ))
-        print(f'change status to {timeout:.13f}')
-        timeout -= every_time
+        try:
+            await client(UpdateProfileRequest(
+                about=f'{timeout:.13f}'
+            ))
+            print(f'change status to {timeout:.13f}')
+            timeout -= every_time
 
-        await asyncio.sleep(every_time * 60)
+            await asyncio.sleep(every_time * 60)
+        except Exception as e:
+            print(e)
+            await asyncio.sleep(10)
 
 
 if __name__ == "__main__":
