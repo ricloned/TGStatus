@@ -49,8 +49,9 @@ async def change_status(client, timeout, every_time):
 
             await asyncio.sleep(every_time * 60)
         except Exception as e:
-            print(e)
-            await asyncio.sleep(10)
+            time = int(str(e).split("A wait of ")[1].split(" seconds is required")[0])
+            print(f'sleep {time}')
+            await asyncio.sleep(time)
 
 
 if __name__ == "__main__":
