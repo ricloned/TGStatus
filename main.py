@@ -16,7 +16,7 @@ async def start(timeout, every_time):
                 unique_gifts = await get_all_gifts(client)
                 while True:
                     try:
-                        gift_now = unique_gifts[randint(0, len(unique_gifts))]
+                        gift_now = unique_gifts[randint(0, len(unique_gifts)-1)]
                         while True:
                             try:
                                 await client(UpdateEmojiStatusRequest(

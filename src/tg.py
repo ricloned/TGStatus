@@ -1,6 +1,7 @@
 import json
 
 from telethon import TelegramClient, functions
+from telethon.tl.types import StarGiftUnique
 
 
 def get_client():
@@ -20,9 +21,7 @@ async def get_all_gifts(client, username='me'):
     unique_gifts = []
     for gift_ in result.gifts:
         gift = gift_.gift
-        try:
+        if isinstance(gift, StarGiftUnique):
             gift_id = gift.id
             unique_gifts.append(gift_id)
-        except:
-            pass # no unique
     return unique_gifts
