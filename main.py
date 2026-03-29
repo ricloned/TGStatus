@@ -13,9 +13,9 @@ async def start(timeout, every_time):
         try:
             client = get_client()
             async with client:
+                unique_gifts = await get_all_gifts(client)
                 while True:
                     try:
-                        unique_gifts = await get_all_gifts(client)
                         gift_now = unique_gifts[randint(0, len(unique_gifts))]
                         while True:
                             try:
@@ -28,7 +28,8 @@ async def start(timeout, every_time):
                                 break
                             except Exception as e:
                                 print(e)
-                                await asyncio.sleep(15)
+                                gift_now = unique_gifts[randint(0, len(unique_gifts))]
+                                await asyncio.sleep(30)
                         await asyncio.create_task(change_status(client, timeout, every_time))
                     except Exception as e:
                         print(e)
